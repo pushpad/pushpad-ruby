@@ -22,6 +22,11 @@ module Pushpad
     @@project_id = project_id
   end
 
+  def self.signature_for(data)
+    raise "You must set Pushpad.auth_token" unless Pushpad.auth_token
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), self.auth_token, data.to_s)
+  end
+
   def self.path(options = {})
     project_id = options[:project_id] || self.project_id
     raise "You must set project_id" unless project_id
@@ -29,9 +34,8 @@ module Pushpad
   end
 
   def self.path_for(user, options = {})
-    raise "You must set Pushpad.auth_token" unless Pushpad.auth_token
     uid = user.respond_to?(:id) ? user.id : user
-    uid_signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), self.auth_token, uid.to_s)
+    uid_signature = self.signature_for(uid.to_s)
     "#{self.path(options)}?uid=#{uid}&uid_signature=#{uid_signature}" 
   end
 
