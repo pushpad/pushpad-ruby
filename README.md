@@ -87,6 +87,13 @@ notification.deliver_to user # or user_id
 # deliver to a group of users
 notification.deliver_to users # or user_ids
 
+# deliver to some users only if they have a given preference
+# e.g. only "users" who have a interested in "events" will be reached
+notification.deliver_to users, tags: ['events']
+
+# deliver to segments
+notification.broadcast tags: ['segment1', 'segment2']
+
 # deliver to everyone
 notification.broadcast
 # => {"scheduled": 12}

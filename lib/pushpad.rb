@@ -52,7 +52,7 @@ module Pushpad
     end
 
     def broadcast(options = {})
-      deliver req_body, options
+      deliver req_body(nil, options[:tags]), options
     end
 
     def deliver_to(users, options = {})
@@ -63,7 +63,7 @@ module Pushpad
       else
         [users.respond_to?(:id) ? users.id : users]
       end
-      deliver req_body(uids), options
+      deliver req_body(uids, options[:tags]), options
     end
 
     private
@@ -91,7 +91,7 @@ module Pushpad
       }
     end
 
-    def req_body(uids = nil)
+    def req_body(uids = nil, tags = nil)
       body = {
         "notification" => {
           "body" => self.body,
@@ -100,6 +100,7 @@ module Pushpad
         }
       }
       body["uids"] = uids if uids
+      body["tags"] = tags if tags
       body.to_json
     end
   end
