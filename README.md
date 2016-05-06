@@ -96,12 +96,14 @@ notification.broadcast tags: ['segment1', 'segment2']
 
 # deliver to everyone
 notification.broadcast
-# => {"scheduled": 12}
 ```
 
 If no user with that id has subscribed to push notifications, that id is simply ignored.
 
-The methods above return an hash: `"scheduled"` is the number of devices to which the notification will be sent.
+The methods above return an hash: 
+
+- `"scheduled"` is the number of devices to which the notification will be sent
+- `"uids"` (`deliver_to` only) are the user IDs that will be actually reached by the notification (unless they have unsubscribed since the last notification)
 
 ## License
 
