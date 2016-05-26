@@ -1,5 +1,5 @@
 require 'net/http'
-require 'OpenSSL'
+require 'openssl'
 require 'json'
 
 module Pushpad
