@@ -77,7 +77,9 @@ When a user clicks the link is sent to Pushpad, asked to receive push notificati
 notification = Pushpad::Notification.new({
   body: "Hello world!", # max 90 characters
   title: "Website Name", # optional, defaults to your project name, max 30 characters
-  target_url: "http://example.com" # optional, defaults to your project website
+  target_url: "http://example.com", # optional, defaults to your project website
+  icon_url: "http://example.com/assets/icon.png", # optional, defaults to the project icon
+  ttl: 604800 # optional, drop the notification after this number of seconds if a device is offline
 })
 
 # deliver to a user
