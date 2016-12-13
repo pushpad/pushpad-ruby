@@ -79,7 +79,8 @@ notification = Pushpad::Notification.new({
   title: "Website Name", # optional, defaults to your project name, max 30 characters
   target_url: "http://example.com", # optional, defaults to your project website
   icon_url: "http://example.com/assets/icon.png", # optional, defaults to the project icon
-  ttl: 604800 # optional, drop the notification after this number of seconds if a device is offline
+  ttl: 604800, # optional, drop the notification after this number of seconds if a device is offline
+  require_interaction: true # optional, default is false, if true it prevents Chrome from automatically closing the notification after a few seconds
 })
 
 # deliver to a user
