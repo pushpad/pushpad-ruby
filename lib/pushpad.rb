@@ -36,14 +36,14 @@ module Pushpad
   def self.path_for(user, options = {})
     uid = user.respond_to?(:id) ? user.id : user
     uid_signature = self.signature_for(uid.to_s)
-    "#{self.path(options)}?uid=#{uid}&uid_signature=#{uid_signature}" 
+    "#{self.path(options)}?uid=#{uid}&uid_signature=#{uid_signature}"
   end
 
   class Notification
     class DeliveryError < RuntimeError
     end
 
-    attr_accessor :body, :title, :target_url, :icon_url, :ttl
+    attr_accessor :body, :title, :target_url, :icon_url, :ttl, :require_interaction
 
     def initialize(options)
       self.body = options[:body]
@@ -51,6 +51,7 @@ module Pushpad
       self.target_url = options[:target_url]
       self.icon_url = options[:icon_url]
       self.ttl = options[:ttl]
+      self.require_interaction = !!options[:require_interaction]
     end
 
     def broadcast(options = {})
@@ -100,7 +101,8 @@ module Pushpad
           "title" => self.title,
           "target_url" => self.target_url,
           "icon_url" => self.icon_url,
-          "ttl" => self.ttl
+          "ttl" => self.ttl,
+          "require_interaction" => self.require_interaction
         }
       }
       body["uids"] = uids if uids
