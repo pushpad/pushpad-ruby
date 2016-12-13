@@ -43,8 +43,7 @@ module Pushpad
     class DeliveryError < RuntimeError
     end
 
-    attr_accessor :body, :title, :target_url, :icon_url, :ttl,
-      :require_interaction
+    attr_accessor :body, :title, :target_url, :icon_url, :ttl, :require_interaction
 
     def initialize(options)
       self.body = options[:body]
@@ -52,7 +51,7 @@ module Pushpad
       self.target_url = options[:target_url]
       self.icon_url = options[:icon_url]
       self.ttl = options[:ttl]
-      self.require_interaction = options[:require_interaction]
+      self.require_interaction = !!options[:require_interaction]
     end
 
     def broadcast(options = {})
