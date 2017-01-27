@@ -7,4 +7,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://pushpad.xyz"
   spec.license       = "MIT"
   spec.files         = ["Gemfile", "LICENSE.txt", "README.md", "lib/pushpad.rb"]
+  spec.test_files    = ["spec/spec_helper.rb", "spec/pushpad_spec.rb"]
+  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "webmock"
 end
