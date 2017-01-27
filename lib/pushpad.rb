@@ -51,7 +51,7 @@ module Pushpad
       self.target_url = options[:target_url]
       self.icon_url = options[:icon_url]
       self.ttl = options[:ttl]
-      self.require_interaction = !!options[:require_interaction]
+      self.require_interaction = options[:require_interaction]
     end
 
     def broadcast(options = {})
@@ -95,16 +95,14 @@ module Pushpad
     end
 
     def req_body(uids = nil, tags = nil)
-      body = {
-        "notification" => {
-          "body" => self.body,
-          "title" => self.title,
-          "target_url" => self.target_url,
-          "icon_url" => self.icon_url,
-          "ttl" => self.ttl,
-          "require_interaction" => self.require_interaction
-        }
-      }
+      notification_params = { "body" => self.body }
+      notification_params["title"] = self.title if self.title
+      notification_params["target_url"] = self.target_url if self.target_url
+      notification_params["icon_url"] = self.icon_url if self.icon_url
+      notification_params["ttl"] = self.ttl if self.ttl
+      notification_params["require_interaction"] = self.require_interaction unless self.require_interaction.nil?
+
+      body = { "notification" => notification_params }
       body["uids"] = uids if uids
       body["tags"] = tags if tags
       body.to_json
