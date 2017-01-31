@@ -1,7 +1,6 @@
-require 'net/http'
 require 'openssl'
-require 'json'
 
+require "pushpad/request"
 require "pushpad/notification"
 
 module Pushpad
