@@ -16,10 +16,10 @@ module Pushpad
         to_return(status: 404)
     end
 
-    def stub_notification_post(project_id, params)
+    def stub_notification_post(project_id, params, response_body = "{}")
       stub_request(:post, "https://pushpad.xyz/projects/#{project_id}/notifications").
         with(body: hash_including(params)).
-        to_return(status: 201, body: "{}")
+        to_return(status: 201, body: response_body)
     end
 
     def stub_failing_notification_post(project_id)
@@ -80,7 +80,73 @@ module Pushpad
       end
     end
 
+    shared_examples "delivery method" do |method|
+      it "fails with DeliveryError if response status code is not 201" do
+        stub_failing_notification_post(project_id)
+
+        expect {
+          method.call(notification)
+        }.to raise_error(Notification::DeliveryError)
+      end
+
+      it "sets id and scheduled_count from json response" do
+        response_body = {
+          "id" => 3,
+          "scheduled" => 5
+        }.to_json
+        stub_notification_post(project_id, {}, response_body)
+
+        method.call(notification)
+
+        expect(notification).to have_attributes(id: 3, scheduled_count: 5)
+      end
+
+      it "overrides id on subsequent calls" do
+        id_counter = 0
+        response_body = lambda do |*|
+          id_counter += 1
+
+          {
+            "id" => id_counter,
+            "scheduled" => 5
+          }.to_json
+        end
+        stub_notification_post(project_id, {}, response_body)
+
+        method.call(notification)
+        method.call(notification)
+        method.call(notification)
+
+        expect(notification.id).to eq(3)
+      end
+
+      it "returns raw json response" do
+        response = {
+          "id" => 4,
+          "scheduled" => 5,
+          "uids" => ["uid0", "uid1"]
+        }
+        stub_notification_post(project_id, {}, response.to_json)
+
+        result = method.call(notification)
+
+        expect(result).to eq(response)
+      end
+
+      it "fails with helpful error message when project_id is missing" do
+        Pushpad.project_id = nil
+
+        expect {
+          method.call(notification)
+        }.to raise_error(/must set project_id/)
+      end
+    end
+
     describe "#deliver_to" do
+      include_examples "delivery method", lambda { |notification|
+        notification.deliver_to(100)
+      }
+
       shared_examples "notification params" do
         it "includes the params in the request" do
           req = stub_notification_post project_id, notification: notification_params
@@ -135,17 +201,13 @@ module Pushpad
           expect(req).to have_been_made.once
         end
       end
-
-      it "fails with DeliveryError if response status code is not 201" do
-        stub_failing_notification_post(project_id)
-
-        expect {
-          notification.deliver_to(100)
-        }.to raise_error(Notification::DeliveryError)
-      end
     end
 
     describe "#broadcast" do
+      include_examples "delivery method", lambda { |notification|
+        notification.broadcast
+      }
+
       shared_examples "notification params" do
         it "includes the params in the request" do
           req = stub_notification_post project_id, notification: notification_params
@@ -191,14 +253,6 @@ module Pushpad
           notification.broadcast tags: ["tag1", "tag2"]
           expect(req).to have_been_made.once
         end
-      end
-
-      it "fails with DeliveryError if response status code is not 201" do
-        stub_failing_notification_post(project_id)
-
-        expect {
-          notification.broadcast
-        }.to raise_error(Notification::DeliveryError)
       end
     end
   end
