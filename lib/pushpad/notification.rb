@@ -1,17 +1,45 @@
+require "json"
+require "time"
+
 module Pushpad
   class Notification
     class DeliveryError < RuntimeError
     end
 
+    class FindError < RuntimeError
+    end
+
+    class ReadOnlyError < RuntimeError
+    end
+
     attr_accessor :body, :title, :target_url, :icon_url, :ttl, :require_interaction
+    attr_reader :id, :created_at, :scheduled_count, :successfully_sent_count, :opened_count
 
     def initialize(options)
-      self.body = options[:body]
-      self.title = options[:title]
-      self.target_url = options[:target_url]
-      self.icon_url = options[:icon_url]
-      self.ttl = options[:ttl]
-      self.require_interaction = options[:require_interaction]
+      @id = options[:id]
+      @read_only = options.key?(:id)
+
+      @created_at = options[:created_at] && Time.parse(options[:created_at])
+      @scheduled_count = options[:scheduled_count]
+      @successfully_sent_count = options[:successfully_sent_count]
+      @opened_count = options[:opened_count]
+
+      @body = options[:body]
+      @title = options[:title]
+      @target_url = options[:target_url]
+      @icon_url = options[:icon_url]
+      @ttl = options[:ttl]
+      @require_interaction = options[:require_interaction]
+    end
+
+    def self.find(id)
+      response = Request.get("https://pushpad.xyz/notifications/#{id}")
+
+      unless response.code == "200"
+        raise FindError, "Response #{response.code} #{response.message}: #{response.body}"
+      end
+
+      new(JSON.parse(response.body, symbolize_names: true))
     end
 
     def broadcast(options = {})
@@ -32,26 +60,21 @@ module Pushpad
     private
 
     def deliver(req_body, options = {})
+      if @read_only
+        raise ReadOnlyError, "Notifications fetched with `find` cannot be delivered again."
+      end
+
       project_id = options[:project_id] || Pushpad.project_id
       raise "You must set project_id" unless project_id
-      endpoint = "https://pushpad.xyz/projects/#{project_id}/notifications"
-      uri = URI.parse(endpoint)
-      https = Net::HTTP.new(uri.host, uri.port)
-      https.use_ssl = true
-      req = Net::HTTP::Post.new(uri.path, req_headers)
-      req.body = req_body
-      res = https.request(req)
-      raise DeliveryError, "Response #{res.code} #{res.message}: #{res.body}" unless res.code == '201'
-      JSON.parse(res.body)
-    end
 
-    def req_headers
-      raise "You must set Pushpad.auth_token" unless Pushpad.auth_token
-      {
-        'Authorization' => 'Token token="' + Pushpad.auth_token + '"',
-        'Content-Type' => 'application/json;charset=UTF-8',
-        'Accept' => 'application/json'
-      }
+      endpoint = "https://pushpad.xyz/projects/#{project_id}/notifications"
+      response = Request.post(endpoint, req_body)
+
+      unless response.code == "201"
+        raise DeliveryError, "Response #{response.code} #{response.message}: #{response.body}"
+      end
+
+      JSON.parse(response.body)
     end
 
     def req_body(uids = nil, tags = nil)

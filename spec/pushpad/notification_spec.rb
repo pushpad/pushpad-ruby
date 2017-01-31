@@ -6,10 +6,78 @@ module Pushpad
     let!(:project_id) { Pushpad.project_id = 123 }
     let(:notification) { Pushpad::Notification.new body: "Example message" }
 
+    def stub_notification_get(attributes)
+      stub_request(:get, "https://pushpad.xyz/notifications/#{attributes[:id]}").
+        to_return(status: 200, body: attributes.to_json)
+    end
+
+    def stub_failing_notification_get(notification_id)
+      stub_request(:get, "https://pushpad.xyz/notifications/#{notification_id}").
+        to_return(status: 404)
+    end
+
     def stub_notification_post(project_id, params)
       stub_request(:post, "https://pushpad.xyz/projects/#{project_id}/notifications").
         with(body: hash_including(params)).
         to_return(status: 201, body: "{}")
+    end
+
+    def stub_failing_notification_post(project_id)
+      stub_request(:post, "https://pushpad.xyz/projects/#{project_id}/notifications").
+        to_return(status: 403)
+    end
+
+    describe ".find" do
+      it "returns notification with attributes from json response" do
+        attributes = {
+          id: 5,
+          title: "Foo Bar",
+          body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+          target_url: "http://example.com",
+          created_at: "2016-07-06T10:09:14.835Z",
+          ttl: 604800,
+          require_interaction: false,
+          icon_url: "https://example.com/assets/icon.png",
+          scheduled_count: 2,
+          successfully_sent_count: 4,
+          opened_count: 1
+        }
+        stub_notification_get(attributes)
+
+        notification = Notification.find(5)
+
+        attributes.delete(:created_at)
+        expect(notification).to have_attributes(attributes)
+        expect(notification.created_at.utc.to_s).to eq(Time.utc(2016, 7, 6, 10, 9, 14.835).to_s)
+      end
+
+      it "fails with FindError if response status code is not 200" do
+        stub_failing_notification_get(5)
+
+        expect {
+          Notification.find(5)
+        }.to raise_error(Notification::FindError)
+      end
+
+      it "returns notification that fails with ReadOnlyError when calling deliver_to" do
+        stub_notification_get(id: 5)
+
+        notification = Notification.find(5)
+
+        expect {
+          notification.deliver_to(100)
+        }.to raise_error(Notification::ReadOnlyError)
+      end
+
+      it "returns notification that fails with ReadOnlyError when calling broadcast" do
+        stub_notification_get(id: 5)
+
+        notification = Notification.find(5)
+
+        expect {
+          notification.broadcast
+        }.to raise_error(Notification::ReadOnlyError)
+      end
     end
 
     describe "#deliver_to" do
@@ -67,6 +135,14 @@ module Pushpad
           expect(req).to have_been_made.once
         end
       end
+
+      it "fails with DeliveryError if response status code is not 201" do
+        stub_failing_notification_post(project_id)
+
+        expect {
+          notification.deliver_to(100)
+        }.to raise_error(Notification::DeliveryError)
+      end
     end
 
     describe "#broadcast" do
@@ -115,6 +191,14 @@ module Pushpad
           notification.broadcast tags: ["tag1", "tag2"]
           expect(req).to have_been_made.once
         end
+      end
+
+      it "fails with DeliveryError if response status code is not 201" do
+        stub_failing_notification_post(project_id)
+
+        expect {
+          notification.broadcast
+        }.to raise_error(Notification::DeliveryError)
       end
     end
   end

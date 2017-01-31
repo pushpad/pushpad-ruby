@@ -111,13 +111,37 @@ notification.broadcast
 
 If no user with that id has subscribed to push notifications, that id is simply ignored.
 
-The methods above return an hash: 
+The methods above return an hash:
 
 - `"id"` is the id of the notification on Pushpad
 - `"scheduled"` is the estimated reach of the notification (i.e. the number of devices to which the notification will be sent, which can be different from the number of users, since a user may receive notifications on multiple devices)
 - `"uids"` (`deliver_to` only) are the user IDs that will be actually reached by the notification because they are subscribed to your notifications. For example if you send a notification to `['uid1', 'uid2', 'uid3']`, but only `'uid1'` is subscribed, you will get `['uid1']` in response. Note that if a user has unsubscribed after the last notification sent to him, he may still be reported for one time as subscribed (this is due to [the way](http://blog.pushpad.xyz/2016/05/the-push-api-and-its-wild-unsubscription-mechanism/) the W3C Push API works).
 
+## Getting push notification data
+
+You can retrieve data for past notifications:
+
+```ruby
+notification = Pushpad::Notification.find(42)
+
+# get basic attributes
+notification.id # => 42
+notification.title # => "Foo Bar",
+notification.body # => "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+notification.target_url # => "http://example.com",
+notification.ttl # => 604800,
+notification.require_interaction # => false,
+notification.icon_url # => "http://example.com/assets/icon.png",
+
+# `created_at` is a `Time` instance
+notification.created_at.utc.to_s # => "2016-07-06 10:09:14 UTC",
+
+# get statistics
+notification.scheduled_count # => 1
+notification.successfully_sent_count # => 4,
+notification.opened_count # => 2
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
