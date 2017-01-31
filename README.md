@@ -117,6 +117,16 @@ The methods above return an hash:
 - `"scheduled"` is the estimated reach of the notification (i.e. the number of devices to which the notification will be sent, which can be different from the number of users, since a user may receive notifications on multiple devices)
 - `"uids"` (`deliver_to` only) are the user IDs that will be actually reached by the notification because they are subscribed to your notifications. For example if you send a notification to `['uid1', 'uid2', 'uid3']`, but only `'uid1'` is subscribed, you will get `['uid1']` in response. Note that if a user has unsubscribed after the last notification sent to him, he may still be reported for one time as subscribed (this is due to [the way](http://blog.pushpad.xyz/2016/05/the-push-api-and-its-wild-unsubscription-mechanism/) the W3C Push API works).
 
+The `id` and `scheduled_count` attribute are also stored on the notification object:
+
+```ruby
+
+notification.deliver_to user
+
+notification.id # => 1000
+notification.scheduled_count # => 5
+```
+
 ## Getting push notification data
 
 You can retrieve data for past notifications:

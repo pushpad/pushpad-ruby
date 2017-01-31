@@ -74,7 +74,10 @@ module Pushpad
         raise DeliveryError, "Response #{response.code} #{response.message}: #{response.body}"
       end
 
-      JSON.parse(response.body)
+      JSON.parse(response.body).tap do |attributes|
+        @id = attributes["id"]
+        @scheduled_count = attributes["scheduled"]
+      end
     end
 
     def req_body(uids = nil, tags = nil)
