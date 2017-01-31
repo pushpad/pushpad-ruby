@@ -5,6 +5,13 @@ module Pushpad
   module Request
     extend self
 
+    def head(endpoint, options = {})
+      uri = URI.parse(endpoint)
+      request = Net::HTTP::Head.new(path_and_query(uri, options[:query_parameters]), headers)
+
+      https(uri, request)
+    end
+
     def get(endpoint)
       uri = URI.parse(endpoint)
       request = Net::HTTP::Get.new(uri.path, headers)
@@ -21,6 +28,14 @@ module Pushpad
     end
 
     private
+
+    def path_and_query(uri, query_parameters)
+      [uri.path, query(query_parameters)].compact.join("?")
+    end
+
+    def query(parameters)
+      parameters && !parameters.empty? ? URI.encode_www_form(parameters) : nil
+    end
 
     def https(uri, request)
       Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |https|
