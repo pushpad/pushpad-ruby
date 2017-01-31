@@ -152,6 +152,22 @@ notification.successfully_sent_count # => 4,
 notification.opened_count # => 2
 ```
 
+## Getting subscription count
+
+You can retrieve the number of subscriptions for a given project,
+optionally filtered by `tags` or `uids`:
+
+```ruby
+Pushpad::Subscription.count(project_id: 5) # => 100
+Pushpad::Subscription.count(project_id: 5, uids: ['user1']) # => 2
+Pushpad::Subscription.count(project_id: 5, tags: ['sports']) # => 10
+Pushpad::Subscription.count(project_id: 5, tags: 'sports && travel') # => 5
+Pushpad::Subscription.count(project_id: 5, uids: ['user1'], tags: 'sports && travel') # => 1
+```
+
+If `Pushpad.project_id` is defined, the `project_id` option can be
+omitted.
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
