@@ -1,13 +1,13 @@
 Gem::Specification.new do |spec|
   spec.name          = "pushpad"
-  spec.version       = '0.5.1'
+  spec.version       = '0.6.0'
   spec.authors       = ["Pushpad"]
   spec.email         = ["support@pushpad.xyz"]
   spec.summary       = "Web push notifications for Chrome, Firefox and Safari using Pushpad."
   spec.homepage      = "https://pushpad.xyz"
   spec.license       = "MIT"
-  spec.files         = ["Gemfile", "LICENSE.txt", "README.md", "lib/pushpad.rb"]
-  spec.test_files    = ["spec/spec_helper.rb", "spec/pushpad_spec.rb"]
+  spec.files         = `git ls-files`.split("\n")
+  spec.test_files    = `git ls-files -- spec/*`.split("\n")
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "webmock"
 end
