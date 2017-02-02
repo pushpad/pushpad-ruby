@@ -42,6 +42,23 @@ module Pushpad
       new(JSON.parse(response.body, symbolize_names: true))
     end
 
+    def self.find_all(options = {})
+      project_id = options[:project_id] || Pushpad.project_id
+      raise "You must set project_id" unless project_id
+
+      query_parameters = {}
+      query_parameters[:page] = options[:page] if options.key?(:page)
+
+      response = Request.get("https://pushpad.xyz/projects/#{project_id}/notifications",
+                             query_parameters: query_parameters)
+
+      unless response.code == "200"
+        raise FindError, "Response #{response.code} #{response.message}: #{response.body}"
+      end
+
+      JSON.parse(response.body, symbolize_names: true).map { |attributes| new(attributes) }
+    end
+
     def broadcast(options = {})
       deliver req_body(nil, options[:tags]), options
     end

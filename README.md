@@ -152,6 +152,26 @@ notification.successfully_sent_count # => 4,
 notification.opened_count # => 2
 ```
 
+Or for mutliple notifications of a project at once:
+
+```ruby
+notifications = Pushpad::Notification.find_all(project_id: 5)
+
+# same attributes as for single notification in example above
+notifications[0].id # => 42
+notifications[0].title # => "Foo Bar",
+```
+
+If `Pushpad.project_id` is defined, the `project_id` option can be
+omitted.
+
+The REST API paginates the result set. You can pass a `page` parameter
+to get the full list in multiple requests.
+
+```ruby
+notifications = Pushpad::Notification.find_all(project_id: 5, page: 2)
+```
+
 ## Getting subscription count
 
 You can retrieve the number of subscriptions for a given project,

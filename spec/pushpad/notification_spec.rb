@@ -16,6 +16,17 @@ module Pushpad
         to_return(status: 404)
     end
 
+    def stub_notifications_get(options)
+      stub_request(:get, "https://pushpad.xyz/projects/#{options[:project_id]}/notifications").
+        with(query: hash_including(options.fetch(:query, {}))).
+        to_return(status: 200, body: options[:list].to_json)
+    end
+
+    def stub_failing_notifications_get(options)
+      stub_request(:get, "https://pushpad.xyz/projects/#{options[:project_id]}/notifications").
+        to_return(status: 403)
+    end
+
     def stub_notification_post(project_id, params, response_body = "{}")
       stub_request(:post, "https://pushpad.xyz/projects/#{project_id}/notifications").
         with(body: hash_including(params)).
@@ -76,6 +87,86 @@ module Pushpad
 
         expect {
           notification.broadcast
+        }.to raise_error(Notification::ReadOnlyError)
+      end
+    end
+
+    describe ".find_all" do
+      it "returns notifications of project with attributes from json response" do
+        attributes = {
+          id: 5,
+          title: "Foo Bar",
+          body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+          target_url: "http://example.com",
+          created_at: "2016-07-06T10:09:14.835Z",
+          ttl: 604800,
+          require_interaction: false,
+          icon_url: "https://example.com/assets/icon.png",
+          scheduled_count: 2,
+          successfully_sent_count: 4,
+          opened_count: 1
+        }
+        stub_notifications_get(project_id: 10, list: [attributes])
+
+        notifications = Notification.find_all(project_id: 10)
+
+        attributes.delete(:created_at)
+        expect(notifications[0]).to have_attributes(attributes)
+        expect(notifications[0].created_at.utc.to_s).to eq(Time.utc(2016, 7, 6, 10, 9, 14.835).to_s)
+      end
+
+      it "falls back to global project id" do
+        attributes = { id: 5 }
+        stub_notifications_get(project_id: 10, list: [attributes])
+
+        Pushpad.project_id = 10
+        notifications = Notification.find_all
+
+        expect(notifications[0]).to have_attributes(attributes)
+      end
+
+      it "fails with helpful error message when project_id is missing" do
+        Pushpad.project_id = nil
+
+        expect {
+          Notification.find_all
+        }.to raise_error(/must set project_id/)
+      end
+
+      it "allows passing page parameter for pagination" do
+        attributes = { id: 5 }
+        stub_notifications_get(project_id: 10, list: [attributes], query: { page: "3" })
+
+        notifications = Notification.find_all(project_id: 10, page: 3)
+
+        expect(notifications[0]).to have_attributes(attributes)
+      end
+
+      it "fails with FindError if response status code is not 200" do
+        stub_failing_notifications_get(project_id: 10)
+
+        expect {
+          Notification.find_all(project_id: 10)
+        }.to raise_error(Notification::FindError)
+      end
+
+      it "returns notifications that fail with ReadOnlyError when calling deliver_to" do
+        stub_notifications_get(project_id: 10, list: [{ id: 5 }])
+
+        notifications = Notification.find_all(project_id: 10)
+
+        expect {
+          notifications[0].deliver_to(100)
+        }.to raise_error(Notification::ReadOnlyError)
+      end
+
+      it "returns notifications that fail with ReadOnlyError when calling broadcast" do
+        stub_notifications_get(project_id: 10, list: [{ id: 5 }])
+
+        notifications = Notification.find_all(project_id: 10)
+
+        expect {
+          notifications[0].broadcast
         }.to raise_error(Notification::ReadOnlyError)
       end
     end
