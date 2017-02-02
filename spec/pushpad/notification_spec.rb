@@ -27,7 +27,7 @@ module Pushpad
         to_return(status: 403)
     end
 
-    def stub_notification_post(project_id, params, response_body = "{}")
+    def stub_notification_post(project_id, params = {}, response_body = "{}")
       stub_request(:post, "https://pushpad.xyz/projects/#{project_id}/notifications").
         with(body: hash_including(params)).
         to_return(status: 201, body: response_body)
@@ -36,6 +36,16 @@ module Pushpad
     def stub_failing_notification_post(project_id)
       stub_request(:post, "https://pushpad.xyz/projects/#{project_id}/notifications").
         to_return(status: 403)
+    end
+
+    describe ".new" do
+      it "allows delivering notifications even if an id attribute is supplied" do
+        stub_notification_post(project_id)
+
+        expect {
+          Notification.new(id: "ignored").broadcast
+        }.not_to raise_error
+      end
     end
 
     describe ".find" do
@@ -70,24 +80,24 @@ module Pushpad
         }.to raise_error(Notification::FindError)
       end
 
-      it "returns notification that fails with ReadOnlyError when calling deliver_to" do
+      it "returns notification that fails with ReadonlyError when calling deliver_to" do
         stub_notification_get(id: 5)
 
         notification = Notification.find(5)
 
         expect {
           notification.deliver_to(100)
-        }.to raise_error(Notification::ReadOnlyError)
+        }.to raise_error(Notification::ReadonlyError)
       end
 
-      it "returns notification that fails with ReadOnlyError when calling broadcast" do
+      it "returns notification that fails with ReadonlyError when calling broadcast" do
         stub_notification_get(id: 5)
 
         notification = Notification.find(5)
 
         expect {
           notification.broadcast
-        }.to raise_error(Notification::ReadOnlyError)
+        }.to raise_error(Notification::ReadonlyError)
       end
     end
 
@@ -150,24 +160,24 @@ module Pushpad
         }.to raise_error(Notification::FindError)
       end
 
-      it "returns notifications that fail with ReadOnlyError when calling deliver_to" do
+      it "returns notifications that fail with ReadonlyError when calling deliver_to" do
         stub_notifications_get(project_id: 10, list: [{ id: 5 }])
 
         notifications = Notification.find_all(project_id: 10)
 
         expect {
           notifications[0].deliver_to(100)
-        }.to raise_error(Notification::ReadOnlyError)
+        }.to raise_error(Notification::ReadonlyError)
       end
 
-      it "returns notifications that fail with ReadOnlyError when calling broadcast" do
+      it "returns notifications that fail with ReadonlyError when calling broadcast" do
         stub_notifications_get(project_id: 10, list: [{ id: 5 }])
 
         notifications = Notification.find_all(project_id: 10)
 
         expect {
           notifications[0].broadcast
-        }.to raise_error(Notification::ReadOnlyError)
+        }.to raise_error(Notification::ReadonlyError)
       end
     end
 

@@ -9,7 +9,7 @@ module Pushpad
     class FindError < RuntimeError
     end
 
-    class ReadOnlyError < RuntimeError
+    class ReadonlyError < RuntimeError
     end
 
     attr_accessor :body, :title, :target_url, :icon_url, :ttl, :require_interaction
@@ -17,8 +17,6 @@ module Pushpad
 
     def initialize(options)
       @id = options[:id]
-      @read_only = options.key?(:id)
-
       @created_at = options[:created_at] && Time.parse(options[:created_at])
       @scheduled_count = options[:scheduled_count]
       @successfully_sent_count = options[:successfully_sent_count]
@@ -39,7 +37,7 @@ module Pushpad
         raise FindError, "Response #{response.code} #{response.message}: #{response.body}"
       end
 
-      new(JSON.parse(response.body, symbolize_names: true))
+      new(JSON.parse(response.body, symbolize_names: true)).readonly!
     end
 
     def self.find_all(options = {})
@@ -56,7 +54,14 @@ module Pushpad
         raise FindError, "Response #{response.code} #{response.message}: #{response.body}"
       end
 
-      JSON.parse(response.body, symbolize_names: true).map { |attributes| new(attributes) }
+      JSON.parse(response.body, symbolize_names: true).map do |attributes|
+        new(attributes).readonly!
+      end
+    end
+
+    def readonly!
+      @readonly = true
+      self
     end
 
     def broadcast(options = {})
@@ -77,8 +82,9 @@ module Pushpad
     private
 
     def deliver(req_body, options = {})
-      if @read_only
-        raise ReadOnlyError, "Notifications fetched with `find` cannot be delivered again."
+      if @readonly
+        raise(ReadonlyError,
+              "Notifications fetched with `find` or `find_all` cannot be delivered again.")
       end
 
       project_id = options[:project_id] || Pushpad.project_id
