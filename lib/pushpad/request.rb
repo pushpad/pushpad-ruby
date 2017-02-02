@@ -6,28 +6,29 @@ module Pushpad
     extend self
 
     def head(endpoint, options = {})
-      uri = URI.parse(endpoint)
-      request = Net::HTTP::Head.new(path_and_query(uri, options[:query_parameters]), headers)
-
-      https(uri, request)
+      perform(Net::HTTP::Head, endpoint, options)
     end
 
-    def get(endpoint)
-      uri = URI.parse(endpoint)
-      request = Net::HTTP::Get.new(uri.path, headers)
-
-      https(uri, request)
+    def get(endpoint, options = {})
+      perform(Net::HTTP::Get, endpoint, options)
     end
 
-    def post(endpoint, body)
-      uri = URI.parse(endpoint)
-      request = Net::HTTP::Post.new(uri.path, headers)
-      request.body = body
-
-      https(uri, request)
+    def post(endpoint, body, options = {})
+      perform(Net::HTTP::Post, endpoint, options) do |request|
+        request.body = body
+      end
     end
 
     private
+
+    def perform(method, endpoint, options)
+      uri = URI.parse(endpoint)
+      request = method.new(path_and_query(uri, options[:query_parameters]), headers)
+
+      yield request if block_given?
+
+      https(uri, request)
+    end
 
     def path_and_query(uri, query_parameters)
       [uri.path, query(query_parameters)].compact.join("?")
