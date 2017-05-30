@@ -87,8 +87,8 @@ notification = Pushpad::Notification.new({
   ttl: 604800, # optional, drop the notification after this number of seconds if a device is offline
   require_interaction: true, # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
   custom_data: "123", # optional, a string that is passed as an argument to action button callbacks
-  // optional, add some action buttons to the notification
-  // see https://pushpad.xyz/docs/action_buttons
+  # optional, add some action buttons to the notification
+  # see https://pushpad.xyz/docs/action_buttons
   actions: [
     {
       title: "My Button 1", # max length is 20 characters
