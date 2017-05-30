@@ -271,8 +271,19 @@ module Pushpad
             title: "Website Name",
             target_url: "http://example.com",
             icon_url: "http://example.com/assets/icon.png",
+            image_url: "http://example.com/assets/image.png",
             ttl: 604800,
-            require_interaction: true
+            require_interaction: true,
+            custom_data: "123",
+            actions: [
+              {
+                title: "My Button 1",
+                target_url: "http://example.com/button-link",
+                icon: "http://example.com/assets/button-icon.png",
+                action: "myActionName"
+              }
+            ],
+            starred: true
           }
         end
         let(:notification) { Pushpad::Notification.new notification_params }
@@ -332,8 +343,19 @@ module Pushpad
             title: "Website Name",
             target_url: "http://example.com",
             icon_url: "http://example.com/assets/icon.png",
+            image_url: "http://example.com/assets/image.png",
             ttl: 604800,
-            require_interaction: true
+            require_interaction: true,
+            custom_data: "123",
+            actions: [
+              {
+                title: "My Button 1",
+                target_url: "http://example.com/button-link",
+                icon: "http://example.com/assets/button-icon.png",
+                action: "myActionName"
+              }
+            ],
+            starred: true
           }
         end
         let(:notification) { Pushpad::Notification.new notification_params }

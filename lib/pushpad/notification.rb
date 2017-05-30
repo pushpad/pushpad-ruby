@@ -12,7 +12,7 @@ module Pushpad
     class ReadonlyError < RuntimeError
     end
 
-    attr_accessor :body, :title, :target_url, :icon_url, :ttl, :require_interaction
+    attr_accessor :body, :title, :target_url, :icon_url, :image_url, :ttl, :require_interaction, :custom_data, :actions, :starred
     attr_reader :id, :created_at, :scheduled_count, :successfully_sent_count, :opened_count
 
     def initialize(options)
@@ -26,8 +26,12 @@ module Pushpad
       @title = options[:title]
       @target_url = options[:target_url]
       @icon_url = options[:icon_url]
+      @image_url = options[:image_url]
       @ttl = options[:ttl]
       @require_interaction = options[:require_interaction]
+      @custom_data = options[:custom_data]
+      @actions = options[:actions]
+      @starred = options[:starred]
     end
 
     def self.find(id)
@@ -108,8 +112,12 @@ module Pushpad
       notification_params["title"] = self.title if self.title
       notification_params["target_url"] = self.target_url if self.target_url
       notification_params["icon_url"] = self.icon_url if self.icon_url
+      notification_params["image_url"] = self.image_url if self.image_url
       notification_params["ttl"] = self.ttl if self.ttl
       notification_params["require_interaction"] = self.require_interaction unless self.require_interaction.nil?
+      notification_params["custom_data"] = self.custom_data if self.custom_data
+      notification_params["actions"] = self.actions if self.actions
+      notification_params["starred"] = self.starred unless self.starred.nil?
 
       body = { "notification" => notification_params }
       body["uids"] = uids if uids
