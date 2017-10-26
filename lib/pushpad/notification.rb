@@ -12,7 +12,7 @@ module Pushpad
     class ReadonlyError < RuntimeError
     end
 
-    attr_accessor :body, :title, :target_url, :icon_url, :image_url, :ttl, :require_interaction, :custom_data, :actions, :starred
+    attr_accessor :body, :title, :target_url, :icon_url, :image_url, :ttl, :require_interaction, :custom_data, :actions, :starred, :send_at
     attr_reader :id, :created_at, :scheduled_count, :successfully_sent_count, :opened_count
 
     def initialize(options)
@@ -32,6 +32,7 @@ module Pushpad
       @custom_data = options[:custom_data]
       @actions = options[:actions]
       @starred = options[:starred]
+      @send_at = options[:send_at]
     end
 
     def self.find(id)
@@ -118,6 +119,7 @@ module Pushpad
       notification_params["custom_data"] = self.custom_data if self.custom_data
       notification_params["actions"] = self.actions if self.actions
       notification_params["starred"] = self.starred unless self.starred.nil?
+      notification_params["send_at"] = self.send_at.utc.strftime("%Y-%m-%dT%R") if self.send_at
 
       body = { "notification" => notification_params }
       body["uids"] = uids if uids

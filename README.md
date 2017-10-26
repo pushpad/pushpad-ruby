@@ -97,7 +97,10 @@ notification = Pushpad::Notification.new({
       action: "myActionName" # optional
     }
   ],
-  starred: true # optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
+  starred: true, # optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
+  # optional, use this option only if you need to create scheduled notifications (max 5 days)
+  # see https://pushpad.xyz/docs/schedule_notifications
+  send_at: Time.utc(2016, 7, 25, 10, 9)
 })
 
 # deliver to a user
@@ -132,6 +135,7 @@ The methods above return an hash:
 - `"id"` is the id of the notification on Pushpad
 - `"scheduled"` is the estimated reach of the notification (i.e. the number of devices to which the notification will be sent, which can be different from the number of users, since a user may receive notifications on multiple devices)
 - `"uids"` (`deliver_to` only) are the user IDs that will be actually reached by the notification because they are subscribed to your notifications. For example if you send a notification to `['uid1', 'uid2', 'uid3']`, but only `'uid1'` is subscribed, you will get `['uid1']` in response. Note that if a user has unsubscribed after the last notification sent to him, he may still be reported for one time as subscribed (this is due to [the way](http://blog.pushpad.xyz/2016/05/the-push-api-and-its-wild-unsubscription-mechanism/) the W3C Push API works).
+- `"send_at"` is present only for scheduled notifications. The fields `"scheduled"` and `"uids"` are not available in this case.
 
 The `id` and `scheduled_count` attribute are also stored on the notification object:
 

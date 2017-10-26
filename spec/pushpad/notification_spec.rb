@@ -28,6 +28,7 @@ module Pushpad
     end
 
     def stub_notification_post(project_id, params = {}, response_body = "{}")
+
       stub_request(:post, "https://pushpad.xyz/projects/#{project_id}/notifications").
         with(body: hash_including(params)).
         to_return(status: 201, body: response_body)
@@ -248,9 +249,11 @@ module Pushpad
         notification.deliver_to(100)
       }
 
+      let(:notification_params_to_json) { {} }
+
       shared_examples "notification params" do
         it "includes the params in the request" do
-          req = stub_notification_post project_id, notification: notification_params
+          req = stub_notification_post project_id, notification: notification_params.merge(notification_params_to_json)
           notification.deliver_to [123, 456]
           expect(req).to have_been_made.once
         end
@@ -283,7 +286,13 @@ module Pushpad
                 action: "myActionName"
               }
             ],
-            starred: true
+            starred: true,
+            send_at: Time.utc(2016, 7, 25, 10, 9)
+          }
+        end
+        let(:notification_params_to_json) do
+          {
+            send_at: "2016-07-25T10:09"
           }
         end
         let(:notification) { Pushpad::Notification.new notification_params }
@@ -320,9 +329,11 @@ module Pushpad
         notification.broadcast
       }
 
+      let(:notification_params_to_json) { {} }
+
       shared_examples "notification params" do
         it "includes the params in the request" do
-          req = stub_notification_post project_id, notification: notification_params
+          req = stub_notification_post project_id, notification: notification_params.merge(notification_params_to_json)
           notification.broadcast
           expect(req).to have_been_made.once
         end
@@ -355,7 +366,13 @@ module Pushpad
                 action: "myActionName"
               }
             ],
-            starred: true
+            starred: true,
+            send_at: Time.utc(2016, 7, 25, 10, 9)
+          }
+        end
+        let(:notification_params_to_json) do
+          {
+            send_at: "2016-07-25T10:09"
           }
         end
         let(:notification) { Pushpad::Notification.new notification_params }
