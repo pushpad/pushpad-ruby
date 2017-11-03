@@ -278,6 +278,7 @@ module Pushpad
             ttl: 604800,
             require_interaction: true,
             custom_data: "123",
+            custom_metrics: ["examples", "another_metric"],
             actions: [
               {
                 title: "My Button 1",
@@ -358,6 +359,7 @@ module Pushpad
             ttl: 604800,
             require_interaction: true,
             custom_data: "123",
+            custom_metrics: ["examples", "another_metric"],
             actions: [
               {
                 title: "My Button 1",

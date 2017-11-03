@@ -100,7 +100,10 @@ notification = Pushpad::Notification.new({
   starred: true, # optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
   # optional, use this option only if you need to create scheduled notifications (max 5 days)
   # see https://pushpad.xyz/docs/schedule_notifications
-  send_at: Time.utc(2016, 7, 25, 10, 9)
+  send_at: Time.utc(2016, 7, 25, 10, 9),
+  # optional, add the notification to custom categories for stats aggregation
+  # see https://pushpad.xyz/docs/monitoring
+  custom_metrics: ['examples', 'another_metric'] # up to 3 metrics per notification
 })
 
 # deliver to a user
