@@ -29,15 +29,4 @@ module Pushpad
     OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), self.auth_token, data.to_s)
   end
 
-  def self.path(options = {})
-    project_id = options[:project_id] || self.project_id
-    raise "You must set project_id" unless project_id
-    "https://pushpad.xyz/projects/#{self.project_id}/subscription/edit"
-  end
-
-  def self.path_for(user, options = {})
-    uid = user.respond_to?(:id) ? user.id : user
-    uid_signature = self.signature_for(uid.to_s)
-    "#{self.path(options)}?uid=#{uid}&uid_signature=#{uid_signature}"
-  end
 end

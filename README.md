@@ -43,30 +43,13 @@ Pushpad.project_id = 123 # set it here or pass it as a param to methods later
 
 ## Collecting user subscriptions to push notifications
 
-Pushpad offers two different products. [Learn more](https://pushpad.xyz/docs)
-
-### Pushpad Pro
-
-Choose Pushpad Pro if you want to use Javascript for a seamless integration. [Read the docs](https://pushpad.xyz/docs/pushpad_pro_getting_started)
+You can subscribe the users to your notifications using the Javascript SDK, as described in the [getting started guide](https://pushpad.xyz/docs/pushpad_pro_getting_started).
 
 If you need to generate the HMAC signature for the `uid` you can use this helper:
 
 ```ruby
 Pushpad.signature_for current_user.id
 ```
-
-### Pushpad Express
-
-If you want to use Pushpad Express, add a link to your website to let users subscribe to push notifications: 
-
-```erb
-<a href="<%= Pushpad.path %>">Push notifications</a>
-
-<!-- If the user is logged in on your website you should track its user id to target him in the future  -->
-<a href="<%= Pushpad.path_for current_user # or current_user_id %>">Push notifications</a>
-```
-
-When a user clicks the link is sent to Pushpad, asked to receive push notifications and redirected back to your website.
 
 ## Sending push notifications
 
