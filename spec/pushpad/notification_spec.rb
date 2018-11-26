@@ -59,6 +59,7 @@ module Pushpad
           created_at: "2016-07-06T10:09:14.835Z",
           ttl: 604800,
           require_interaction: false,
+          urgent: false,
           icon_url: "https://example.com/assets/icon.png",
           scheduled_count: 2,
           successfully_sent_count: 4,
@@ -112,6 +113,7 @@ module Pushpad
           created_at: "2016-07-06T10:09:14.835Z",
           ttl: 604800,
           require_interaction: false,
+          urgent: false,
           icon_url: "https://example.com/assets/icon.png",
           scheduled_count: 2,
           successfully_sent_count: 4,
@@ -277,6 +279,7 @@ module Pushpad
             image_url: "http://example.com/assets/image.png",
             ttl: 604800,
             require_interaction: true,
+            urgent: true,
             custom_data: "123",
             custom_metrics: ["examples", "another_metric"],
             actions: [
@@ -358,6 +361,7 @@ module Pushpad
             image_url: "http://example.com/assets/image.png",
             ttl: 604800,
             require_interaction: true,
+            urgent: true,
             custom_data: "123",
             custom_metrics: ["examples", "another_metric"],
             actions: [
