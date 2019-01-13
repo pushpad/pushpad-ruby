@@ -55,8 +55,8 @@ Pushpad.signature_for current_user.id
 
 ```ruby
 notification = Pushpad::Notification.new({
-  body: "Hello world!", # max 120 characters
-  title: "Website Name", # optional, defaults to your project name, max 30 characters
+  body: "Hello world!",
+  title: "Website Name", # optional, defaults to your project name
   target_url: "http://example.com", # optional, defaults to your project website
   icon_url: "http://example.com/assets/icon.png", # optional, defaults to the project icon
   image_url: "http://example.com/assets/image.png", # optional, an image to display in the notification content
@@ -68,7 +68,7 @@ notification = Pushpad::Notification.new({
   # see https://pushpad.xyz/docs/action_buttons
   actions: [
     {
-      title: "My Button 1", # max length is 20 characters
+      title: "My Button 1",
       target_url: "http://example.com/button-link", # optional
       icon: "http://example.com/assets/button-icon.png", # optional
       action: "myActionName" # optional
