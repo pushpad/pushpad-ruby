@@ -18,7 +18,7 @@ module Pushpad
         project_id = options[:project_id] || Pushpad.project_id
         raise "You must set project_id" unless project_id
 
-        endpoint = "https://pushpad.xyz/projects/#{project_id}/subscriptions"
+        endpoint = "https://pushpad.xyz/api/v1/projects/#{project_id}/subscriptions"
         response = Request.head(endpoint, query_parameters: query_parameters)
 
         unless response.code == "200"

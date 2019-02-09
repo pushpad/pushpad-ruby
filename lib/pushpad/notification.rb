@@ -38,7 +38,7 @@ module Pushpad
     end
 
     def self.find(id)
-      response = Request.get("https://pushpad.xyz/notifications/#{id}")
+      response = Request.get("https://pushpad.xyz/api/v1/notifications/#{id}")
 
       unless response.code == "200"
         raise FindError, "Response #{response.code} #{response.message}: #{response.body}"
@@ -54,7 +54,7 @@ module Pushpad
       query_parameters = {}
       query_parameters[:page] = options[:page] if options.key?(:page)
 
-      response = Request.get("https://pushpad.xyz/projects/#{project_id}/notifications",
+      response = Request.get("https://pushpad.xyz/api/v1/projects/#{project_id}/notifications",
                              query_parameters: query_parameters)
 
       unless response.code == "200"
@@ -97,7 +97,7 @@ module Pushpad
       project_id = options[:project_id] || Pushpad.project_id
       raise "You must set project_id" unless project_id
 
-      endpoint = "https://pushpad.xyz/projects/#{project_id}/notifications"
+      endpoint = "https://pushpad.xyz/api/v1/projects/#{project_id}/notifications"
       response = Request.post(endpoint, req_body)
 
       unless response.code == "201"

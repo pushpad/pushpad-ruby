@@ -7,35 +7,35 @@ module Pushpad
     let(:notification) { Pushpad::Notification.new body: "Example message" }
 
     def stub_notification_get(attributes)
-      stub_request(:get, "https://pushpad.xyz/notifications/#{attributes[:id]}").
+      stub_request(:get, "https://pushpad.xyz/api/v1/notifications/#{attributes[:id]}").
         to_return(status: 200, body: attributes.to_json)
     end
 
     def stub_failing_notification_get(notification_id)
-      stub_request(:get, "https://pushpad.xyz/notifications/#{notification_id}").
+      stub_request(:get, "https://pushpad.xyz/api/v1/notifications/#{notification_id}").
         to_return(status: 404)
     end
 
     def stub_notifications_get(options)
-      stub_request(:get, "https://pushpad.xyz/projects/#{options[:project_id]}/notifications").
+      stub_request(:get, "https://pushpad.xyz/api/v1/projects/#{options[:project_id]}/notifications").
         with(query: hash_including(options.fetch(:query, {}))).
         to_return(status: 200, body: options[:list].to_json)
     end
 
     def stub_failing_notifications_get(options)
-      stub_request(:get, "https://pushpad.xyz/projects/#{options[:project_id]}/notifications").
+      stub_request(:get, "https://pushpad.xyz/api/v1/projects/#{options[:project_id]}/notifications").
         to_return(status: 403)
     end
 
     def stub_notification_post(project_id, params = {}, response_body = "{}")
 
-      stub_request(:post, "https://pushpad.xyz/projects/#{project_id}/notifications").
+      stub_request(:post, "https://pushpad.xyz/api/v1/projects/#{project_id}/notifications").
         with(body: hash_including(params)).
         to_return(status: 201, body: response_body)
     end
 
     def stub_failing_notification_post(project_id)
-      stub_request(:post, "https://pushpad.xyz/projects/#{project_id}/notifications").
+      stub_request(:post, "https://pushpad.xyz/api/v1/projects/#{project_id}/notifications").
         to_return(status: 403)
     end
 

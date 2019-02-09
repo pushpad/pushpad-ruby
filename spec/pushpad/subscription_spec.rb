@@ -3,14 +3,14 @@ require "spec_helper"
 module Pushpad
   describe Subscription do
     def stub_subscriptions_head(options)
-      stub_request(:head, "https://pushpad.xyz/projects/#{options[:project_id]}/subscriptions").
+      stub_request(:head, "https://pushpad.xyz/api/v1/projects/#{options[:project_id]}/subscriptions").
         with(query: hash_including(options.fetch(:query, {}))).
         to_return(status: 200,
                   headers: { "X-Total-Count" => options.fetch(:total_count, 10) })
     end
 
     def stub_failing_subscriptions_head(options)
-      stub_request(:head, "https://pushpad.xyz/projects/#{options[:project_id]}/subscriptions").
+      stub_request(:head, "https://pushpad.xyz/api/v1/projects/#{options[:project_id]}/subscriptions").
         to_return(status: 503)
     end
 
