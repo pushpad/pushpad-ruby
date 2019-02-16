@@ -55,7 +55,7 @@ module Pushpad
           id: 5,
           title: "Foo Bar",
           body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-          target_url: "http://example.com",
+          target_url: "https://example.com",
           created_at: "2016-07-06T10:09:14.835Z",
           ttl: 604800,
           require_interaction: false,
@@ -109,7 +109,7 @@ module Pushpad
           id: 5,
           title: "Foo Bar",
           body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-          target_url: "http://example.com",
+          target_url: "https://example.com",
           created_at: "2016-07-06T10:09:14.835Z",
           ttl: 604800,
           require_interaction: false,
@@ -274,9 +274,9 @@ module Pushpad
           {
             body: "Example message",
             title: "Website Name",
-            target_url: "http://example.com",
-            icon_url: "http://example.com/assets/icon.png",
-            image_url: "http://example.com/assets/image.png",
+            target_url: "https://example.com",
+            icon_url: "https://example.com/assets/icon.png",
+            image_url: "https://example.com/assets/image.png",
             ttl: 604800,
             require_interaction: true,
             urgent: true,
@@ -285,8 +285,8 @@ module Pushpad
             actions: [
               {
                 title: "My Button 1",
-                target_url: "http://example.com/button-link",
-                icon: "http://example.com/assets/button-icon.png",
+                target_url: "https://example.com/button-link",
+                icon: "https://example.com/assets/button-icon.png",
                 action: "myActionName"
               }
             ],
@@ -356,9 +356,9 @@ module Pushpad
           {
             body: "Example message",
             title: "Website Name",
-            target_url: "http://example.com",
-            icon_url: "http://example.com/assets/icon.png",
-            image_url: "http://example.com/assets/image.png",
+            target_url: "https://example.com",
+            icon_url: "https://example.com/assets/icon.png",
+            image_url: "https://example.com/assets/image.png",
             ttl: 604800,
             require_interaction: true,
             urgent: true,
@@ -367,8 +367,8 @@ module Pushpad
             actions: [
               {
                 title: "My Button 1",
-                target_url: "http://example.com/button-link",
-                icon: "http://example.com/assets/button-icon.png",
+                target_url: "https://example.com/button-link",
+                icon: "https://example.com/assets/button-icon.png",
                 action: "myActionName"
               }
             ],

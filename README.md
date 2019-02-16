@@ -57,9 +57,9 @@ Pushpad.signature_for current_user.id
 notification = Pushpad::Notification.new({
   body: "Hello world!",
   title: "Website Name", # optional, defaults to your project name
-  target_url: "http://example.com", # optional, defaults to your project website
-  icon_url: "http://example.com/assets/icon.png", # optional, defaults to the project icon
-  image_url: "http://example.com/assets/image.png", # optional, an image to display in the notification content
+  target_url: "https://example.com", # optional, defaults to your project website
+  icon_url: "https://example.com/assets/icon.png", # optional, defaults to the project icon
+  image_url: "https://example.com/assets/image.png", # optional, an image to display in the notification content
   ttl: 604800, # optional, drop the notification after this number of seconds if a device is offline
   require_interaction: true, # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
   urgent: false, # optional, enable this option only for time-sensitive alerts (e.g. incoming phone call)
@@ -69,8 +69,8 @@ notification = Pushpad::Notification.new({
   actions: [
     {
       title: "My Button 1",
-      target_url: "http://example.com/button-link", # optional
-      icon: "http://example.com/assets/button-icon.png", # optional
+      target_url: "https://example.com/button-link", # optional
+      icon: "https://example.com/assets/button-icon.png", # optional
       action: "myActionName" # optional
     }
   ],
@@ -114,7 +114,7 @@ The methods above return an hash:
 
 - `"id"` is the id of the notification on Pushpad
 - `"scheduled"` is the estimated reach of the notification (i.e. the number of devices to which the notification will be sent, which can be different from the number of users, since a user may receive notifications on multiple devices)
-- `"uids"` (`deliver_to` only) are the user IDs that will be actually reached by the notification because they are subscribed to your notifications. For example if you send a notification to `['uid1', 'uid2', 'uid3']`, but only `'uid1'` is subscribed, you will get `['uid1']` in response. Note that if a user has unsubscribed after the last notification sent to him, he may still be reported for one time as subscribed (this is due to [the way](http://blog.pushpad.xyz/2016/05/the-push-api-and-its-wild-unsubscription-mechanism/) the W3C Push API works).
+- `"uids"` (`deliver_to` only) are the user IDs that will be actually reached by the notification because they are subscribed to your notifications. For example if you send a notification to `['uid1', 'uid2', 'uid3']`, but only `'uid1'` is subscribed, you will get `['uid1']` in response. Note that if a user has unsubscribed after the last notification sent to him, he may still be reported for one time as subscribed (this is due to [the way](https://blog.pushpad.xyz/2016/05/the-push-api-and-its-wild-unsubscription-mechanism/) the W3C Push API works).
 - `"send_at"` is present only for scheduled notifications. The fields `"scheduled"` and `"uids"` are not available in this case.
 
 The `id` and `scheduled_count` attribute are also stored on the notification object:
@@ -138,11 +138,11 @@ notification = Pushpad::Notification.find(42)
 notification.id # => 42
 notification.title # => "Foo Bar",
 notification.body # => "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-notification.target_url # => "http://example.com",
+notification.target_url # => "https://example.com",
 notification.ttl # => 604800,
 notification.require_interaction # => false,
 notification.urgent # => false,
-notification.icon_url # => "http://example.com/assets/icon.png",
+notification.icon_url # => "https://example.com/assets/icon.png",
 
 # `created_at` is a `Time` instance
 notification.created_at.utc.to_s # => "2016-07-06 10:09:14 UTC",
