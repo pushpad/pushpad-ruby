@@ -62,6 +62,7 @@ notification = Pushpad::Notification.new({
   image_url: "https://example.com/assets/image.png", # optional, an image to display in the notification content
   ttl: 604800, # optional, drop the notification after this number of seconds if a device is offline
   require_interaction: true, # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
+  silent: false, # optional, enable this option if you want a mute notification without any sound
   urgent: false, # optional, enable this option only for time-sensitive alerts (e.g. incoming phone call)
   custom_data: "123", # optional, a string that is passed as an argument to action button callbacks
   # optional, add some action buttons to the notification
@@ -141,6 +142,7 @@ notification.body # => "Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 notification.target_url # => "https://example.com",
 notification.ttl # => 604800,
 notification.require_interaction # => false,
+notification.silent # => false,
 notification.urgent # => false,
 notification.icon_url # => "https://example.com/assets/icon.png",
 
