@@ -1,7 +1,7 @@
 # Pushpad - Web Push Notifications
 
-[![Build Status](https://travis-ci.org/pushpad/pushpad-ruby.svg?branch=master)](https://travis-ci.org/pushpad/pushpad-ruby)
 [![Gem Version](https://badge.fury.io/rb/pushpad.svg)](https://badge.fury.io/rb/pushpad)
+![Build Status](https://github.com/pushpad/pushpad-ruby/workflows/CI/badge.svg)
 
 [Pushpad](https://pushpad.xyz) is a service for sending push notifications from your web app. It supports the **Push API** (Chrome, Firefox, Opera, Edge) and **APNs** (Safari).
 
