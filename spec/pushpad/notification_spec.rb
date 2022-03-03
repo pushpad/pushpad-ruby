@@ -62,6 +62,7 @@ module Pushpad
           silent: false,
           urgent: false,
           icon_url: "https://example.com/assets/icon.png",
+          badge_url: "https://example.com/assets/badge.png",
           scheduled_count: 2,
           successfully_sent_count: 4,
           opened_count: 1
@@ -117,6 +118,7 @@ module Pushpad
           silent: false,
           urgent: false,
           icon_url: "https://example.com/assets/icon.png",
+          badge_url: "https://example.com/assets/badge.png",
           scheduled_count: 2,
           successfully_sent_count: 4,
           opened_count: 1
@@ -278,6 +280,7 @@ module Pushpad
             title: "Website Name",
             target_url: "https://example.com",
             icon_url: "https://example.com/assets/icon.png",
+            badge_url: "https://example.com/assets/badge.png",
             image_url: "https://example.com/assets/image.png",
             ttl: 604800,
             require_interaction: true,
@@ -361,6 +364,7 @@ module Pushpad
             title: "Website Name",
             target_url: "https://example.com",
             icon_url: "https://example.com/assets/icon.png",
+            badge_url: "https://example.com/assets/badge.png",
             image_url: "https://example.com/assets/image.png",
             ttl: 604800,
             require_interaction: true,
