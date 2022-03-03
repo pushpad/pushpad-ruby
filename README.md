@@ -59,7 +59,7 @@ notification = Pushpad::Notification.new({
   title: "Website Name", # optional, defaults to your project name
   target_url: "https://example.com", # optional, defaults to your project website
   icon_url: "https://example.com/assets/icon.png", # optional, defaults to the project icon
-  badge_url: "https://example.com/assets/badge.png" # optional, defaults to the project badge
+  badge_url: "https://example.com/assets/badge.png", # optional, defaults to the project badge
   image_url: "https://example.com/assets/image.png", # optional, an image to display in the notification content
   ttl: 604800, # optional, drop the notification after this number of seconds if a device is offline
   require_interaction: true, # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
@@ -138,22 +138,22 @@ notification = Pushpad::Notification.find(42)
 
 # get basic attributes
 notification.id # => 42
-notification.title # => "Foo Bar",
-notification.body # => "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-notification.target_url # => "https://example.com",
-notification.ttl # => 604800,
-notification.require_interaction # => false,
-notification.silent # => false,
-notification.urgent # => false,
-notification.icon_url # => "https://example.com/assets/icon.png",
-notification.badge_url # => "https://example.com/assets/badge.png",
+notification.title # => "Foo Bar"
+notification.body # => "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+notification.target_url # => "https://example.com"
+notification.ttl # => 604800
+notification.require_interaction # => false
+notification.silent # => false
+notification.urgent # => false
+notification.icon_url # => "https://example.com/assets/icon.png"
+notification.badge_url # => "https://example.com/assets/badge.png"
 
 # `created_at` is a `Time` instance
-notification.created_at.utc.to_s # => "2016-07-06 10:09:14 UTC",
+notification.created_at.utc.to_s # => "2016-07-06 10:09:14 UTC"
 
 # get statistics
 notification.scheduled_count # => 1
-notification.successfully_sent_count # => 4,
+notification.successfully_sent_count # => 4
 notification.opened_count # => 2
 ```
 
@@ -164,7 +164,7 @@ notifications = Pushpad::Notification.find_all(project_id: 5)
 
 # same attributes as for single notification in example above
 notifications[0].id # => 42
-notifications[0].title # => "Foo Bar",
+notifications[0].title # => "Foo Bar"
 ```
 
 If `Pushpad.project_id` is defined, the `project_id` option can be
