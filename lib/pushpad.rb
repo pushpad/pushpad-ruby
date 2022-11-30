@@ -26,7 +26,7 @@ module Pushpad
 
   def self.signature_for(data)
     raise "You must set Pushpad.auth_token" unless Pushpad.auth_token
-    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), self.auth_token, data.to_s)
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), self.auth_token, data.to_s)
   end
 
 end
