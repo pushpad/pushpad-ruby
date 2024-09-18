@@ -237,6 +237,29 @@ Pushpad::Subscription.count(project_id: 5, uids: ['user1'], tags: 'sports && tra
 If `Pushpad.project_id` is defined, the `project_id` option can be
 omitted.
 
+## Getting push subscription data
+
+You can retrieve the subscriptions for a given project,
+optionally filtered by `tags` or `uids`:
+
+```ruby
+Pushpad::Subscription.find_all(project_id: 5)
+Pushpad::Subscription.find_all(project_id: 5, uids: ['user1'])
+Pushpad::Subscription.find_all(project_id: 5, tags: ['sports'])
+Pushpad::Subscription.find_all(project_id: 5, tags: 'sports && travel')
+Pushpad::Subscription.find_all(project_id: 5, uids: ['user1'], tags: 'sports && travel')
+```
+
+If `Pushpad.project_id` is defined, the `project_id` option can be
+omitted.
+
+The REST API paginates the result set. You can pass a `page` parameter
+to get the full list in multiple requests.
+
+```ruby
+subscriptions = Pushpad::Subscription.find_all(project_id: 5, page: 2)
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
