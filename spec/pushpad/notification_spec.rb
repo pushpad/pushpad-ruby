@@ -28,7 +28,6 @@ module Pushpad
     end
 
     def stub_notification_post(project_id, params = {}, response_body = "{}")
-
       stub_request(:post, "https://pushpad.xyz/api/v1/projects/#{project_id}/notifications").
         with(body: hash_including(params)).
         to_return(status: 201, body: response_body)
@@ -37,6 +36,16 @@ module Pushpad
     def stub_failing_notification_post(project_id)
       stub_request(:post, "https://pushpad.xyz/api/v1/projects/#{project_id}/notifications").
         to_return(status: 403)
+    end
+    
+    def stub_notification_delete(notification_id)
+      stub_request(:delete, "https://pushpad.xyz/api/v1/notifications/#{notification_id}/cancel").
+        to_return(status: 204)
+    end
+    
+    def stub_failing_notification_delete(notification_id)
+      stub_request(:delete, "https://pushpad.xyz/api/v1/notifications/#{notification_id}/cancel").
+        to_return(status: 404)
     end
 
     describe ".new" do
@@ -409,5 +418,27 @@ module Pushpad
         end
       end
     end
+    
+    describe "#cancel" do
+      it "cancels a scheduled notification" do
+        stub_notification_delete(5)
+        
+        notification = Notification.new(id: 5)
+        
+        res = notification.cancel
+        expect(res).to be_nil
+      end
+      
+      it "fails with CancelError if response status code is not 204" do
+        stub_failing_notification_delete(5)
+        
+        notification = Notification.new(id: 5)
+        
+        expect {
+          notification.cancel
+        }.to raise_error(Notification::CancelError)
+      end
+    end
+    
   end
 end

@@ -8,6 +8,9 @@ module Pushpad
 
     class FindError < RuntimeError
     end
+    
+    class CancelError < RuntimeError
+    end
 
     class ReadonlyError < RuntimeError
     end
@@ -86,6 +89,14 @@ module Pushpad
         [users.respond_to?(:id) ? users.id : users]
       end
       deliver req_body(uids, options[:tags]), options
+    end
+    
+    def cancel
+      response = Request.delete("https://pushpad.xyz/api/v1/notifications/#{id}/cancel")
+
+      unless response.code == "204"
+        raise CancelError, "Response #{response.code} #{response.message}: #{response.body}"
+      end
     end
 
     private

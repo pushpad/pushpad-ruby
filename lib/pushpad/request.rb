@@ -18,6 +18,10 @@ module Pushpad
         request.body = body
       end
     end
+    
+    def delete(endpoint, options = {})
+      perform(Net::HTTP::Delete, endpoint, options)
+    end
 
     private
 

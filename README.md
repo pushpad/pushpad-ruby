@@ -201,6 +201,26 @@ to get the full list in multiple requests.
 notifications = Pushpad::Notification.find_all(project_id: 5, page: 2)
 ```
 
+## Scheduled notifications
+
+You can create scheduled notifications that will be sent in the future:
+
+```ruby
+notification = Pushpad::Notification.new({
+  body: "This notification will be sent after 60 seconds",
+  send_at: Time.now.utc + 60
+})
+
+notification.broadcast
+```
+
+You can also cancel a scheduled notification:
+
+```ruby
+notification = Pushpad::Notification.find(5)
+notification.cancel
+```
+
 ## Getting subscription count
 
 You can retrieve the number of subscriptions for a given project,
