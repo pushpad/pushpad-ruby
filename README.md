@@ -267,6 +267,24 @@ Pushpad::Subscription.find 123
 Pushpad::Subscription.find 123, project_id: 456
 ```
 
+## Importing push subscriptions
+
+If you need to [import](https://pushpad.xyz/docs/import) some existing push subscriptions (from another service to Pushpad, or from your backups) or if you simply need to create some test data, you can use this method:
+
+```ruby
+attributes = {
+  endpoint: "https://example.com/push/f7Q1Eyf7EyfAb1", 
+  p256dh: "BCQVDTlYWdl05lal3lG5SKr3VxTrEWpZErbkxWrzknHrIKFwihDoZpc_2sH6Sh08h-CacUYI-H8gW4jH-uMYZQ4=",
+  auth: "cdKMlhgVeSPzCXZ3V7FtgQ==",
+  uid: "exampleUid", 
+  tags: ["exampleTag1", "exampleTag2"]
+}
+
+subscription = Pushpad::Subscription.create(attributes, project_id: 5)
+```
+
+Please note that this is not the standard way to collect subscriptions on Pushpad: usually you subscribe the users to the notifications using the [JavaScript SDK](https://pushpad.xyz/docs/javascript_sdk_reference) in the frontend.
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

@@ -34,6 +34,42 @@ module Pushpad
       stub_request(:get, "https://pushpad.xyz/api/v1/projects/#{options[:project_id]}/subscriptions").
         to_return(status: 403)
     end
+    
+    def stub_subscriptions_post(project_id, attributes = {})
+      stub_request(:post, "https://pushpad.xyz/api/v1/projects/#{project_id}/subscriptions").
+        with(body: hash_including(attributes)).
+        to_return(status: 201, body: attributes.to_json)
+    end
+
+    def stub_failing_subscriptions_post(project_id)
+      stub_request(:post, "https://pushpad.xyz/api/v1/projects/#{project_id}/subscriptions").
+        to_return(status: 403)
+    end
+    
+    describe ".create" do
+      it "creates a new subscription with the given attributes and returns it" do
+        attributes = {
+          endpoint: "https://example.com/push/f7Q1Eyf7EyfAb1", 
+          p256dh: "BCQVDTlYWdl05lal3lG5SKr3VxTrEWpZErbkxWrzknHrIKFwihDoZpc_2sH6Sh08h-CacUYI-H8gW4jH-uMYZQ4=",
+          auth: "cdKMlhgVeSPzCXZ3V7FtgQ==",
+          uid: "exampleUid", 
+          tags: ["exampleTag1", "exampleTag2"]
+        }
+        stub_subscriptions_post(5, attributes)
+
+        subscription = Subscription.create(attributes, project_id: 5)
+        expect(subscription).to have_attributes(attributes)
+      end
+      
+      it "fails with CreateError if response status code is not 201" do
+        attributes = { endpoint: "https://example.com/push/123" }
+        stub_failing_subscriptions_post(5)
+
+        expect {
+          Subscription.create(attributes, project_id: 5)
+        }.to raise_error(Subscription::CreateError)
+      end
+    end
 
     describe ".count" do
       it "returns value from X-Total-Count header" do

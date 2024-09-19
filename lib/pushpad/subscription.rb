@@ -1,5 +1,8 @@
 module Pushpad
   class Subscription
+    class CreateError < RuntimeError
+    end
+    
     class CountError < RuntimeError
     end
     
@@ -17,6 +20,20 @@ module Pushpad
       @tags = options[:tags]
       @last_click_at = options[:last_click_at] && Time.parse(options[:last_click_at])
       @created_at = options[:created_at] && Time.parse(options[:created_at])
+    end
+    
+    def self.create(attributes, options = {})
+      project_id = options[:project_id] || Pushpad.project_id
+      raise "You must set project_id" unless project_id
+      
+      endpoint = "https://pushpad.xyz/api/v1/projects/#{project_id}/subscriptions"
+      response = Request.post(endpoint, attributes.to_json)
+
+      unless response.code == "201"
+        raise CreateError, "Response #{response.code} #{response.message}: #{response.body}"
+      end
+      
+      new(JSON.parse(response.body, symbolize_names: true))
     end
 
     def self.count(options = {})
