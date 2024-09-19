@@ -57,6 +57,16 @@ module Pushpad
         to_return(status: 422)
     end
     
+    def stub_subscription_delete(project_id, id)
+      stub_request(:delete, "https://pushpad.xyz/api/v1/projects/#{project_id}/subscriptions/#{id}").
+        to_return(status: 204)
+    end
+    
+    def stub_failing_subscription_delete(project_id, id)
+      stub_request(:delete, "https://pushpad.xyz/api/v1/projects/#{project_id}/subscriptions/#{id}").
+        to_return(status: 403)
+    end
+    
     describe ".create" do
       it "creates a new subscription with the given attributes and returns it" do
         attributes = {
@@ -332,6 +342,29 @@ module Pushpad
         expect {
           Subscription.new(id: nil).update({})
         }.to raise_error(/must set id/)
+      end
+    end
+    
+    describe "#delete" do
+      it "deletes a subscription" do
+        Pushpad.project_id = 5
+        stub_subscription_delete(5, 123)
+        
+        subscription = Subscription.new(id: 123)
+        
+        res = subscription.delete
+        expect(res).to be_nil
+      end
+      
+      it "fails with DeleteError if response status code is not 204" do
+        Pushpad.project_id = 5
+        stub_failing_subscription_delete(5, 123)
+        
+        subscription = Subscription.new(id: 123)
+        
+        expect {
+          subscription.delete
+        }.to raise_error(Subscription::DeleteError)
       end
     end
     

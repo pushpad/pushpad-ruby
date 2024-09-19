@@ -303,6 +303,17 @@ subscription = Pushpad::Subscription.create(attributes, project_id: 5)
 
 Please note that this is not the standard way to collect subscriptions on Pushpad: usually you subscribe the users to the notifications using the [JavaScript SDK](https://pushpad.xyz/docs/javascript_sdk_reference) in the frontend.
 
+## Deleting push subscriptions
+
+Usually you unsubscribe a user from push notifications using the [JavaScript SDK](https://pushpad.xyz/docs/javascript_sdk_reference) in the frontend (recommended).
+
+However you can also delete the subscriptions using this library. Be careful, the subscriptions are permanently deleted!
+
+```ruby
+subscription = Pushpad::Subscription.find 123
+subscription.delete
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

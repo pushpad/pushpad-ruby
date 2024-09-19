@@ -12,6 +12,9 @@ module Pushpad
     class FindError < RuntimeError
     end
     
+    class DeleteError < RuntimeError
+    end
+    
     attr_reader :id, :endpoint, :p256dh, :auth, :uid, :tags, :last_click_at, :created_at
 
     def initialize(options)
@@ -103,6 +106,19 @@ module Pushpad
       @tags = attributes[:tags]
       
       self
+    end
+    
+    def delete(options = {})
+      project_id = options[:project_id] || Pushpad.project_id
+      raise "You must set project_id" unless project_id
+      
+      raise "You must set id" unless id
+      
+      response = Request.delete("https://pushpad.xyz/api/v1/projects/#{project_id}/subscriptions/#{id}")
+
+      unless response.code == "204"
+        raise DeleteError, "Response #{response.code} #{response.message}: #{response.body}"
+      end
     end
 
     private
