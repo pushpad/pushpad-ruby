@@ -19,6 +19,12 @@ module Pushpad
       end
     end
     
+    def patch(endpoint, body, options = {})
+      perform(Net::HTTP::Patch, endpoint, options) do |request|
+        request.body = body
+      end
+    end
+    
     def delete(endpoint, options = {})
       perform(Net::HTTP::Delete, endpoint, options)
     end

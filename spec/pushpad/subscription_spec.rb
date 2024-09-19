@@ -46,6 +46,17 @@ module Pushpad
         to_return(status: 403)
     end
     
+    def stub_subscription_patch(project_id, id, attributes = {})
+      stub_request(:patch, "https://pushpad.xyz/api/v1/projects/#{project_id}/subscriptions/#{id}").
+        with(body: hash_including(attributes)).
+        to_return(status: 200, body: attributes.to_json)
+    end
+
+    def stub_failing_subscription_patch(project_id, id)
+      stub_request(:patch, "https://pushpad.xyz/api/v1/projects/#{project_id}/subscriptions/#{id}").
+        to_return(status: 422)
+    end
+    
     describe ".create" do
       it "creates a new subscription with the given attributes and returns it" do
         attributes = {
@@ -280,6 +291,47 @@ module Pushpad
         subscriptions = Subscription.find_all(project_id: 5)
 
         expect(subscriptions).to eq([])
+      end
+    end
+    
+    describe "#update" do
+      it "updates a subscription with the given attributes and returns it" do
+        attributes = {
+          uid: "exampleUid", 
+          tags: ["exampleTag1", "exampleTag2"]
+        }
+        stub_subscription_patch(5, 123, attributes)
+
+        subscription = Subscription.new(id: 123)
+        subscription.update attributes, project_id: 5
+        expect(subscription).to have_attributes(attributes)
+      end
+      
+      it "fails with UpdateError if response status code is not 200" do
+        attributes = { uid: "exampleUid" }
+        stub_failing_subscription_patch(5, 123)
+
+        subscription = Subscription.new(id: 123)
+        
+        expect {
+          subscription.update attributes, project_id: 5
+        }.to raise_error(Subscription::UpdateError)
+      end
+      
+      it "fails with helpful error message when project_id is missing" do
+        Pushpad.project_id = nil
+
+        expect {
+          Subscription.new(id: 123).update({})
+        }.to raise_error(/must set project_id/)
+      end
+      
+      it "fails with helpful error message when id is missing" do
+        Pushpad.project_id = 5
+        
+        expect {
+          Subscription.new(id: nil).update({})
+        }.to raise_error(/must set id/)
       end
     end
     

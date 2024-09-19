@@ -3,6 +3,9 @@ module Pushpad
     class CreateError < RuntimeError
     end
     
+    class UpdateError < RuntimeError
+    end
+    
     class CountError < RuntimeError
     end
     
@@ -80,6 +83,26 @@ module Pushpad
       JSON.parse(response.body, symbolize_names: true).map do |attributes|
         new(attributes)
       end
+    end
+    
+    def update(attributes, options = {})
+      project_id = options[:project_id] || Pushpad.project_id
+      raise "You must set project_id" unless project_id
+      
+      raise "You must set id" unless id
+      
+      endpoint = "https://pushpad.xyz/api/v1/projects/#{project_id}/subscriptions/#{id}"
+      response = Request.patch(endpoint, attributes.to_json)
+
+      unless response.code == "200"
+        raise UpdateError, "Response #{response.code} #{response.message}: #{response.body}"
+      end
+      
+      attributes = JSON.parse(response.body, symbolize_names: true)
+      @uid = attributes[:uid]
+      @tags = attributes[:tags]
+      
+      self
     end
 
     private

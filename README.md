@@ -267,6 +267,24 @@ Pushpad::Subscription.find 123
 Pushpad::Subscription.find 123, project_id: 456
 ```
 
+## Updating push subscription data
+
+Usually you add data, like user IDs and tags, to the push subscriptions using the [JavaScript SDK](https://pushpad.xyz/docs/javascript_sdk_reference) in the frontend.
+
+However you can also update the subscription data from your server:
+
+```ruby
+Pushpad::Subscription.find_all(uids: ['user1']).each do |subscription|
+  # update the user ID associated to the push subscription
+  subscription.update uid: 'myuser1'
+  
+  # update the tags associated to the push subscription
+  tags = subscription.tags
+  tags << 'another_tag'
+  subscription.update tags: tags
+end
+```
+
 ## Importing push subscriptions
 
 If you need to [import](https://pushpad.xyz/docs/import) some existing push subscriptions (from another service to Pushpad, or from your backups) or if you simply need to create some test data, you can use this method:
