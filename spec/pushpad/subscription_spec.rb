@@ -2,6 +2,16 @@ require "spec_helper"
 
 module Pushpad
   describe Subscription do
+    def stub_subscription_get(options)
+      stub_request(:get, "https://pushpad.xyz/api/v1/projects/#{options[:project_id]}/subscriptions/#{options[:id]}").
+        to_return(status: 200, body: options[:attributes].to_json)
+    end
+
+    def stub_failing_subscription_get(options)
+      stub_request(:get, "https://pushpad.xyz/api/v1/projects/#{options[:project_id]}/subscriptions/#{options[:id]}").
+        to_return(status: 404)
+    end
+    
     def stub_subscriptions_head(options)
       stub_request(:head, "https://pushpad.xyz/api/v1/projects/#{options[:project_id]}/subscriptions").
         with(query: hash_including(options.fetch(:query, {}))).
@@ -90,6 +100,46 @@ module Pushpad
         expect {
           Subscription.count(project_id: 5)
         }.to raise_error(Subscription::CountError)
+      end
+    end
+    
+    describe ".find" do
+      it "returns subscription with attributes from json response" do
+        attributes = {
+          id: 5,
+          endpoint: "https://example.com/push/f7Q1Eyf7EyfAb1", 
+          p256dh: "BCQVDTlYWdl05lal3lG5SKr3VxTrEWpZErbkxWrzknHrIKFwihDoZpc_2sH6Sh08h-CacUYI-H8gW4jH-uMYZQ4=",
+          auth: "cdKMlhgVeSPzCXZ3V7FtgQ==",
+          uid: "exampleUid", 
+          tags: ["exampleTag1", "exampleTag2"],
+          last_click_at: "2023-11-03T10:30:00.000Z",
+          created_at: "2016-09-06T10:47:05.494Z"
+        }
+        stub_subscription_get(id: 5, project_id: 10, attributes: attributes)
+
+        subscription = Subscription.find(5, project_id: 10)
+
+        attributes.delete(:last_click_at)
+        attributes.delete(:created_at)
+        expect(subscription).to have_attributes(attributes)
+        expect(subscription.last_click_at.utc.to_s).to eq(Time.utc(2023, 11, 3, 10, 30, 0.0).to_s)
+        expect(subscription.created_at.utc.to_s).to eq(Time.utc(2016, 9, 6, 10, 47, 5.494).to_s)
+      end
+
+      it "fails with FindError if response status code is not 200" do
+        stub_failing_subscription_get(id: 5, project_id: 10)
+
+        expect {
+          Subscription.find(5, project_id: 10)
+        }.to raise_error(Subscription::FindError)
+      end
+      
+      it "fails with helpful error message when project_id is missing" do
+        Pushpad.project_id = nil
+
+        expect {
+          Subscription.find 5
+        }.to raise_error(/must set project_id/)
       end
     end
     

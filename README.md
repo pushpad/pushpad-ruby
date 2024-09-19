@@ -260,6 +260,13 @@ to get the full list in multiple requests.
 subscriptions = Pushpad::Subscription.find_all(project_id: 5, page: 2)
 ```
 
+You can also retrieve the data of a specific subscription if you already know its id:
+
+```ruby
+Pushpad::Subscription.find 123
+Pushpad::Subscription.find 123, project_id: 456
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

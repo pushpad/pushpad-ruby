@@ -33,6 +33,19 @@ module Pushpad
       response["X-Total-Count"].to_i
     end
     
+    def self.find(id, options = {})
+      project_id = options[:project_id] || Pushpad.project_id
+      raise "You must set project_id" unless project_id
+      
+      response = Request.get("https://pushpad.xyz/api/v1/projects/#{project_id}/subscriptions/#{id}")
+
+      unless response.code == "200"
+        raise FindError, "Response #{response.code} #{response.message}: #{response.body}"
+      end
+
+      new(JSON.parse(response.body, symbolize_names: true))
+    end
+    
     def self.find_all(options = {})
       project_id = options[:project_id] || Pushpad.project_id
       raise "You must set project_id" unless project_id
