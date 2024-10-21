@@ -350,6 +350,38 @@ project.update(name: 'The New Project Name')
 project.delete
 ```
 
+## Managing senders
+
+Senders are usually created manually from the Pushpad dashboard. However you can also create senders from code.
+
+```ruby
+attributes = {
+  # required attributes
+  name: "My sender",
+  
+  # optional configurations
+  # do not include these fields if you want to generate them automatically
+  vapid_private_key: "-----BEGIN EC PRIVATE KEY----- ...",
+  vapid_public_key: "-----BEGIN PUBLIC KEY----- ..."
+}
+
+sender = Pushpad::Sender.create(attributes)
+```
+
+You can also find, update and delete senders:
+
+```ruby
+Pushpad::Sender.find_all.each do |s|
+  puts "Sender #{s.id}: #{s.name}"
+end
+
+sender = Pushpad::Sender.find 987
+
+sender.update(name: 'The New Sender Name')
+
+sender.delete
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

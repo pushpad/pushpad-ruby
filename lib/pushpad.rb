@@ -4,6 +4,7 @@ require "pushpad/request"
 require "pushpad/notification"
 require "pushpad/subscription"
 require "pushpad/project"
+require "pushpad/sender"
 
 module Pushpad
   @@auth_token = nil
