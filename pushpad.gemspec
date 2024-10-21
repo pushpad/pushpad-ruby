@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "pushpad"
-  spec.version       = '1.3.0'
+  spec.version       = '1.4.0'
   spec.authors       = ["Pushpad"]
   spec.email         = ["support@pushpad.xyz"]
   spec.summary       = "Web push notifications for Chrome, Firefox, Opera, Edge and Safari using Pushpad."

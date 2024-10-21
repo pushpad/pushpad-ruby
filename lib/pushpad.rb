@@ -3,6 +3,7 @@ require 'openssl'
 require "pushpad/request"
 require "pushpad/notification"
 require "pushpad/subscription"
+require "pushpad/project"
 
 module Pushpad
   @@auth_token = nil

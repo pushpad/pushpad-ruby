@@ -314,6 +314,42 @@ subscription = Pushpad::Subscription.find 123
 subscription.delete
 ```
 
+## Managing projects
+
+Projects are usually created manually from the Pushpad dashboard. However you can also create projects from code if you need advanced automation or if you manage [many different domains](https://pushpad.xyz/docs/multiple_domains).
+
+```ruby
+attributes = {
+  # required attributes
+  sender_id: 123,
+  name: "My project",
+  website: "https://example.com",
+  
+  # optional configurations
+  icon_url: "https://example.com/icon.png",
+  badge_url: "https://example.com/badge.png",
+  notifications_ttl: 604800,
+  notifications_require_interaction: false,
+  notifications_silent: false
+}
+
+project = Pushpad::Project.create(attributes)
+```
+
+You can also find, update and delete projects:
+
+```ruby
+Pushpad::Project.find_all.each do |p|
+  puts "Project #{p.id}: #{p.name}"
+end
+
+project = Pushpad::Project.find 123
+
+project.update(name: 'The New Project Name')
+
+project.delete
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
