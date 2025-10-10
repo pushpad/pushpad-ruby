@@ -16,10 +16,11 @@ module Pushpad
     end
 
     attr_accessor :body, :title, :target_url, :icon_url, :badge_url, :image_url, :ttl, :require_interaction, :silent, :urgent, :custom_data, :custom_metrics, :actions, :starred, :send_at
-    attr_reader :id, :created_at, :scheduled_count, :successfully_sent_count, :opened_count
+    attr_reader :id, :project_id, :created_at, :scheduled_count, :successfully_sent_count, :opened_count
 
     def initialize(options)
       @id = options[:id]
+      @project_id = options[:project_id]
       @created_at = options[:created_at] && Time.parse(options[:created_at])
       @scheduled_count = options[:scheduled_count]
       @successfully_sent_count = options[:successfully_sent_count]

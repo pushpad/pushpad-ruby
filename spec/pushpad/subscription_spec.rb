@@ -164,6 +164,7 @@ module Pushpad
       it "returns subscription with attributes from json response" do
         attributes = {
           id: 5,
+          project_id: 123,
           endpoint: "https://example.com/push/f7Q1Eyf7EyfAb1", 
           p256dh: "BCQVDTlYWdl05lal3lG5SKr3VxTrEWpZErbkxWrzknHrIKFwihDoZpc_2sH6Sh08h-CacUYI-H8gW4jH-uMYZQ4=",
           auth: "cdKMlhgVeSPzCXZ3V7FtgQ==",
@@ -204,6 +205,7 @@ module Pushpad
       it "returns subscriptions of project with attributes from json response" do
         attributes = {
           id: 1169,
+          project_id: 123,
           endpoint: "https://example.com/push/f7Q1Eyf7EyfAb1", 
           p256dh: "BCQVDTlYWdl05lal3lG5SKr3VxTrEWpZErbkxWrzknHrIKFwihDoZpc_2sH6Sh08h-CacUYI-H8gW4jH-uMYZQ4=",
           auth: "cdKMlhgVeSPzCXZ3V7FtgQ==",

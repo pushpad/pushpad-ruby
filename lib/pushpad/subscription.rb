@@ -15,10 +15,11 @@ module Pushpad
     class DeleteError < RuntimeError
     end
     
-    attr_reader :id, :endpoint, :p256dh, :auth, :uid, :tags, :last_click_at, :created_at
+    attr_reader :id, :project_id, :endpoint, :p256dh, :auth, :uid, :tags, :last_click_at, :created_at
 
     def initialize(options)
       @id = options[:id]
+      @project_id = options[:project_id]
       @endpoint = options[:endpoint]
       @p256dh = options[:p256dh]
       @auth = options[:auth]
@@ -89,7 +90,7 @@ module Pushpad
     end
     
     def update(attributes, options = {})
-      project_id = options[:project_id] || Pushpad.project_id
+      project_id = project_id || options[:project_id] || Pushpad.project_id
       raise "You must set project_id" unless project_id
       
       raise "You must set id" unless id
@@ -109,7 +110,7 @@ module Pushpad
     end
     
     def delete(options = {})
-      project_id = options[:project_id] || Pushpad.project_id
+      project_id = project_id || options[:project_id] || Pushpad.project_id
       raise "You must set project_id" unless project_id
       
       raise "You must set id" unless id

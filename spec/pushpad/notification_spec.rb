@@ -62,6 +62,7 @@ module Pushpad
       it "returns notification with attributes from json response" do
         attributes = {
           id: 5,
+          project_id: 123,
           title: "Foo Bar",
           body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
           target_url: "https://example.com",
@@ -118,6 +119,7 @@ module Pushpad
       it "returns notifications of project with attributes from json response" do
         attributes = {
           id: 5,
+          project_id: 123,
           title: "Foo Bar",
           body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
           target_url: "https://example.com",
